@@ -1,0 +1,26 @@
+// text "Xin chào <user name>"
+// card{
+// <tên căn hộ>
+// <tầng, tên tòa nhà>
+// card bên trái
+//  {số dư căn hộ,
+//  <số tiền>
+//  }
+// card bên phải
+//  {phí cần thanh toán,
+//   <số tiền>
+//  }
+// }
+// dịch vụ yêu thích, <nút chỉnh sửa, align right>
+// <grid view 4x2>
+
+// CarouselView
+
+// thông tin
+// list{
+//  card wrap in inkwell{
+//  <ảnh>
+//  <label bài viết>
+//  }
+//
+// }

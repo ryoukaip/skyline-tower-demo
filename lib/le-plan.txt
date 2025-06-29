@@ -1,0 +1,2 @@
+use firebase for auth
+postgres + fastapi python for backend
