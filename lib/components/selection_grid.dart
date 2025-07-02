@@ -26,19 +26,43 @@ class SelectionGrid extends StatelessWidget {
       ),
       itemBuilder: (_, idx) {
         final item = items[idx];
+        // return InkWell(
+        //   onTap: () => onItemTap?.call(item),
+        //   borderRadius: BorderRadius.circular(8),
+        //   child: Center(
+        //     child: Column(
+        //       mainAxisSize: MainAxisSize.min,
+        //       children: [
+        //         CircleAvatar(child: Icon(item['icon'])),
+        //         const SizedBox(height: 4),
+        //         Text(
+        //           item['label'],
+        //           textAlign: TextAlign.center,
+        //           style: const TextStyle(fontSize: 12),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // );
         return InkWell(
           onTap: () => onItemTap?.call(item),
           borderRadius: BorderRadius.circular(8),
-          child: Center(
+          child: SizedBox(
+            height: 100, // Set a fixed height for your grid item
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start, // Align to top
               children: [
                 CircleAvatar(child: Icon(item['icon'])),
                 const SizedBox(height: 4),
-                Text(
-                  item['label'],
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 12),
+                Expanded(
+                  child: Text(
+                    item['label'],
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 12),
+                    overflow:
+                        TextOverflow.ellipsis, // Optional: or use maxLines
+                    maxLines: 2, // Limit lines if you want
+                  ),
                 ),
               ],
             ),

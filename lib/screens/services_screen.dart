@@ -29,8 +29,8 @@ class ServicesScreen extends StatelessWidget {
       {'icon': Icons.water_drop, 'label': 'Phí nước'},
       {'icon': Icons.flash_on, 'label': 'Phí điện'},
       {'icon': Icons.directions_bike, 'label': 'Phương tiện'},
-      {'icon': Icons.swap_horiz, 'label': 'Đăng ký chuyển đồ'},
-      {'icon': Icons.build, 'label': 'Đăng ký sửa chữa'},
+      {'icon': Icons.swap_horiz, 'label': 'Chuyển đồ'},
+      {'icon': Icons.build, 'label': 'Sửa chữa'},
       {'icon': Icons.event_available, 'label': 'Đặt tiện ích'},
       {'icon': Icons.credit_card, 'label': 'Đăng ký thẻ'},
     ];
@@ -74,7 +74,7 @@ class ServicesScreen extends StatelessWidget {
             SelectionGrid(items: allServices),
 
             sectionTitle('Tin tức'),
-            SelectionGrid(items: newsItems, crossAxisCount: 3),
+            SelectionGrid(items: newsItems, crossAxisCount: 4),
           ],
         ),
       ),

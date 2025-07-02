@@ -10,6 +10,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:skyline_tower2/components/selection_grid.dart';
 
 class PersonalScreen extends StatelessWidget {
   const PersonalScreen({super.key});
@@ -76,72 +77,14 @@ class PersonalScreen extends StatelessWidget {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: personalInfoItems.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.9,
-              ),
-              itemBuilder: (_, idx) {
-                final item = personalInfoItems[idx];
-                return InkWell(
-                  onTap: () {},
-                  borderRadius: BorderRadius.circular(8),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircleAvatar(child: Icon(item['icon'])),
-                      const SizedBox(height: 8),
-                      Text(
-                        item['label'],
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+            SelectionGrid(items: personalInfoItems, crossAxisCount: 4,),
             const SizedBox(height: 24),
             const Text(
               'Quản lý và thiết lập',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: settingsItems.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.9,
-              ),
-              itemBuilder: (_, idx) {
-                final item = settingsItems[idx];
-                return InkWell(
-                  onTap: () {},
-                  borderRadius: BorderRadius.circular(8),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircleAvatar(child: Icon(item['icon'])),
-                      const SizedBox(height: 8),
-                      Text(
-                        item['label'],
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+            SelectionGrid(items: settingsItems, crossAxisCount: 4,)
           ],
         ),
       ),
