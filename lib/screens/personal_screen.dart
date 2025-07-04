@@ -64,7 +64,7 @@ class PersonalScreen extends StatelessWidget {
                         onPressed: () {
                           // Edit info
                         },
-                        child: const Text('Chỉnh sửa thông tin'),
+                        child: const Text("Sửa")
                       ),
                     ],
                   ),

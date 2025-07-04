@@ -26,6 +26,24 @@ class SelectionGrid extends StatelessWidget {
       ),
       itemBuilder: (_, idx) {
         final item = items[idx];
+        // return InkWell(
+        //   onTap: () => onItemTap?.call(item),
+        //   borderRadius: BorderRadius.circular(8),
+        //   child: Center(
+        //     child: Column(
+        //       mainAxisSize: MainAxisSize.min,
+        //       children: [
+        //         CircleAvatar(child: Icon(item['icon'])),
+        //         const SizedBox(height: 4),
+        //         Text(
+        //           item['label'],
+        //           textAlign: TextAlign.center,
+        //           style: const TextStyle(fontSize: 12),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // );
         return InkWell(
           onTap: () => onItemTap?.call(item),
           borderRadius: BorderRadius.circular(8),

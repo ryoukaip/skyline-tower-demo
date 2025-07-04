@@ -1,2 +1,2 @@
 use firebase for auth
-postgres + fastapi python for backend
+postgres + flask python for backend

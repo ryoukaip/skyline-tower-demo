@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skyline_tower2/components/auto_scroll_text.dart';
+import 'package:skyline_tower2/components/selection_grid.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -120,38 +121,7 @@ class HomeScreen extends StatelessWidget {
                 TextButton(onPressed: () {}, child: const Text('Chỉnh sửa')),
               ],
             ),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: services.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.8,
-              ),
-              itemBuilder: (_, idx) {
-                final s = services[idx];
-                return InkWell(
-                  onTap: () {},
-                  borderRadius: BorderRadius.circular(8),
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircleAvatar(child: Icon(s['icon'])),
-                        const SizedBox(height: 4),
-                        Text(
-                          s['label'],
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+            SelectionGrid(items: services),
             const SizedBox(height: 24),
             SizedBox(
               height: 200,
