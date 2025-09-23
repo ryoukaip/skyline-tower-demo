@@ -11,6 +11,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:skyline_tower2/components/selection_grid.dart';
+import 'package:skyline_tower2/screens/request_form_screen.dart';
 
 class ServicesScreen extends StatelessWidget {
   const ServicesScreen({super.key});
@@ -59,8 +60,17 @@ class ServicesScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dịch vụ'),
+      appBar: AppBar(title: const Text('Dịch vụ')),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Add your action here
+          print('Temporary FAB pressed');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ServiceRegistrationForm()),
+          );
+        },
+        child: Icon(Icons.add),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -68,7 +78,7 @@ class ServicesScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             sectionTitle('Tiện ích yêu thích'),
-            SelectionGrid(items: favoriteServices,),
+            SelectionGrid(items: favoriteServices),
 
             sectionTitle('Dịch vụ'),
             SelectionGrid(items: allServices),

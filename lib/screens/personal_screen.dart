@@ -11,6 +11,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:skyline_tower2/components/selection_grid.dart';
+import 'package:skyline_tower2/screens/login_screen.dart';
 
 class PersonalScreen extends StatelessWidget {
   const PersonalScreen({super.key});
@@ -64,7 +65,7 @@ class PersonalScreen extends StatelessWidget {
                         onPressed: () {
                           // Edit info
                         },
-                        child: const Text("Sửa")
+                        child: const Text("Sửa"),
                       ),
                     ],
                   ),
@@ -77,14 +78,28 @@ class PersonalScreen extends StatelessWidget {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            SelectionGrid(items: personalInfoItems, crossAxisCount: 4,),
+            SelectionGrid(items: personalInfoItems, crossAxisCount: 4),
             const SizedBox(height: 24),
             const Text(
               'Quản lý và thiết lập',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            SelectionGrid(items: settingsItems, crossAxisCount: 4,)
+            SelectionGrid(
+              items: settingsItems,
+              crossAxisCount: 4,
+              onItemTap: (item) {
+                if (item['label'] == 'Đăng xuất') {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginScreen(),
+                    ),
+                    (route) => false,
+                  );
+                }
+              },
+            ),
           ],
         ),
       ),

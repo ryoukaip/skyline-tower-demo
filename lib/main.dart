@@ -1,37 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:skyline_tower2/screens/login_screen.dart';
+import 'package:app_links/app_links.dart';
+import 'dart:async';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
 
-  // This widget is the root of your application.
+class _MyAppState extends State<MyApp> {
+  late final AppLinks _appLinks;
+  StreamSubscription? _linkSub;
+
+  @override
+  void initState() {
+    super.initState();
+    _initDeepLinks();
+  }
+
+  void _initDeepLinks() {
+    _appLinks = AppLinks();
+
+    // Listen to deep link streams
+    _linkSub = _appLinks.uriLinkStream.listen((uri) {
+      if (uri != null) {
+        final status = uri.queryParameters['status'];
+        final orderId = uri.queryParameters['order_id'];
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => PaymentResultScreen(status: status ?? 'unknown', orderId: orderId ?? ''),
+          ),
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _linkSub?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
       home: const LoginScreen(),
     );
   }
+}
+
+class PaymentResultScreen extends StatelessWidget {
+  final String status;
+  final String orderId;
+
+  const PaymentResultScreen({super.key, required this.status, required this.orderId});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Kết quả thanh toán')),
+    body: Center(child: Text('Status: $status\nOrder ID: $orderId')),
+  );
 }
