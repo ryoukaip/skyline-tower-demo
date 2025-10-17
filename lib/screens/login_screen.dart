@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skyline_tower2/layouts/main_layout.dart';
-import 'package:pocketbase/pocketbase.dart';
+import 'package:skyline_tower2/components/pocketbase_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,27 +13,14 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  bool _obscurePassword = true; // Add this line for password visibility state
-  final pb = PocketBase('http://192.168.1.4:8090');
+  bool _obscurePassword = true;
+  bool _isLoading = false;
 
-  void _login() {
-    String username = usernameController.text;
-    String password = passwordController.text;
+  final PocketBaseService _pbService = PocketBaseService();
 
-    if (username == "sample" && password == "1234") {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MainLayout()),
-      );
-    } else {
-      // Show error message
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Invalid credentials')));
-    }
-  }
+  Future<void> _login() async {
+    setState(() => _isLoading = true);
 
-  Future<void> _login1() async {
     final username = usernameController.text.trim();
     final password = passwordController.text.trim();
 
@@ -47,53 +34,51 @@ class LoginScreenState extends State<LoginScreen> {
     }
 
     try {
-      // Attempt auth (assuming "users" collection exists in PocketBase)
-      final authData = await pb
-          .collection("users")
-          .authWithPassword(username, password);
+      await _pbService.login(username, password);
 
-      // Check success
-      if (pb.authStore.isValid) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => MainLayout()),
-        );
+      if (_pbService.isLoggedIn) {
+        await _pbService.debugPrintNews();
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const MainLayout()),
+          );
+        }
       } else {
         _showError("Login failed.");
       }
     } catch (e) {
       _showError("Invalid credentials or server error.");
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
-  }
-
-  void _showError(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   Future<void> _loginGoogle() async {
     try {
-      // OAuth2 login with Google
-      final authData = await pb.collection("users").authWithOAuth2("google", (
-        url,
-      ) async {
-        // Open the browser to let the user log in with Google
+      await _pbService.loginWithGoogle((url) async {
         if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
           throw Exception("Could not launch $url");
         }
       });
 
-      if (pb.authStore.isValid) {
-        // Navigate to main layout after success
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => MainLayout()),
-        );
+      if (_pbService.isLoggedIn) {
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const MainLayout()),
+          );
+        }
       } else {
         _showError("Google login failed.");
       }
     } catch (e) {
       _showError("Google login error: $e");
     }
+  }
+
+  void _showError(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   @override
@@ -110,16 +95,15 @@ class LoginScreenState extends State<LoginScreen> {
                 // Logo
                 Image.asset('assets/logo.png', height: 100),
                 const SizedBox(height: 10),
-                Text("Skyline Tower", style: TextStyle(fontSize: 20)),
+                const Text("Skyline Tower", style: TextStyle(fontSize: 20)),
                 const SizedBox(height: 40),
 
                 // Username or Phone Number
                 TextField(
                   controller: usernameController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Phone number or username',
                     border: OutlineInputBorder(),
-                    // prefixIcon: Icon(Icons.person),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -130,7 +114,7 @@ class LoginScreenState extends State<LoginScreen> {
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
                     labelText: 'Password',
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscurePassword
@@ -152,9 +136,9 @@ class LoginScreenState extends State<LoginScreen> {
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      // Handle forgot password
+                      // TODO: Handle forgot password
                     },
-                    child: Text('Forgot Password?'),
+                    child: const Text('Forgot Password?'),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -167,16 +151,40 @@ class LoginScreenState extends State<LoginScreen> {
                       backgroundColor: Colors.blue,
                       foregroundColor: Colors.white,
                     ),
-                    onPressed: _login1,
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 14),
-                      child: Text('Login', style: TextStyle(fontSize: 16)),
+                    onPressed: _login,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      child:
+                          _isLoading
+                              ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                              : const Text(
+                                'Login',
+                                style: TextStyle(fontSize: 16),
+                              ),
                     ),
                   ),
                 ),
 
-                // Login google
-                // To be added
+                const SizedBox(height: 20),
+
+                // Google Login Button
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    onPressed: _loginGoogle,
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      child: Text('Login with Google'),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

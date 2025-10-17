@@ -10,6 +10,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:skyline_tower2/components/pocketbase_service.dart';
 import 'package:skyline_tower2/components/selection_grid.dart';
 import 'package:skyline_tower2/screens/login_screen.dart';
 
@@ -33,7 +34,7 @@ class PersonalScreen extends StatelessWidget {
       {'icon': Icons.book, 'label': 'Sổ tay'},
       {'icon': Icons.photo_library, 'label': 'Thư viện'},
       {'icon': Icons.help_outline, 'label': 'Hướng dẫn sử dụng'},
-      {'icon': Icons.language, 'label': 'Ngôn ngữ'},
+      // {'icon': Icons.language, 'label': 'Ngôn ngữ'},
       {'icon': Icons.system_update, 'label': 'Nâng cấp ứng dụng'},
       {'icon': Icons.logout, 'label': 'Đăng xuất'},
     ];
@@ -90,12 +91,36 @@ class PersonalScreen extends StatelessWidget {
               crossAxisCount: 4,
               onItemTap: (item) {
                 if (item['label'] == 'Đăng xuất') {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoginScreen(),
-                    ),
-                    (route) => false,
+                  showDialog(
+                    context: context,
+                    builder:
+                        (context) => AlertDialog(
+                          title: const Text("Bạn có muốn đăng xuất?"),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context); // close dialog
+                              },
+                              child: const Text("Không"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                // 1. Clear PocketBase login
+                                final pbService = PocketBaseService();
+                                pbService.logout();
+                                Navigator.pop(context); // close dialog first
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginScreen(),
+                                  ),
+                                  (route) => false,
+                                );
+                              },
+                              child: const Text("Có"),
+                            ),
+                          ],
+                        ),
                   );
                 }
               },

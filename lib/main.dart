@@ -1,14 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:skyline_tower2/components/pocketbase_service.dart';
 import 'package:skyline_tower2/screens/login_screen.dart';
+import 'package:skyline_tower2/layouts/main_layout.dart';
 import 'package:app_links/app_links.dart';
 import 'dart:async';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await PocketBaseService.init();
+
+  bool loggedIn = false;
+  if (PocketBaseService().isLoggedIn) {
+    try {
+      await PocketBaseService().pb.collection('users').authRefresh();
+      loggedIn = true;
+    } catch (e) {
+      // token invalid, force logout
+      PocketBaseService().logout();
+    }
+  }
+
+  runApp(MyApp(isLoggedIn: loggedIn));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final bool isLoggedIn;
+  const MyApp({super.key, required this.isLoggedIn});
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -25,8 +43,6 @@ class _MyAppState extends State<MyApp> {
 
   void _initDeepLinks() {
     _appLinks = AppLinks();
-
-    // Listen to deep link streams
     _linkSub = _appLinks.uriLinkStream.listen((uri) {
       if (uri != null) {
         final status = uri.queryParameters['status'];
@@ -34,7 +50,11 @@ class _MyAppState extends State<MyApp> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => PaymentResultScreen(status: status ?? 'unknown', orderId: orderId ?? ''),
+            builder:
+                (_) => PaymentResultScreen(
+                  status: status ?? 'unknown',
+                  orderId: orderId ?? '',
+                ),
           ),
         );
       }
@@ -50,11 +70,11 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Skyline Tower',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: const LoginScreen(),
+      home: widget.isLoggedIn ? const MainLayout() : const LoginScreen(),
     );
   }
 }
@@ -63,7 +83,11 @@ class PaymentResultScreen extends StatelessWidget {
   final String status;
   final String orderId;
 
-  const PaymentResultScreen({super.key, required this.status, required this.orderId});
+  const PaymentResultScreen({
+    super.key,
+    required this.status,
+    required this.orderId,
+  });
 
   @override
   Widget build(BuildContext context) => Scaffold(

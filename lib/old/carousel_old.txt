@@ -1,0 +1,30 @@
+              // const SizedBox(height: 24),
+              // SizedBox(
+              //   height: 200,
+              //   child: CarouselView(
+              //     itemExtent: 300,
+              //     shrinkExtent: 200,
+              //     padding: EdgeInsets.symmetric(horizontal: 8),
+              //     itemSnapping: true,
+              //     elevation: 4,
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(8),
+              //     ),
+              //     children: List.generate(
+              //       5,
+              //       (i) => Container(
+              //         margin: EdgeInsets.symmetric(vertical: 16),
+              //         decoration: BoxDecoration(
+              //           borderRadius: BorderRadius.circular(8),
+              //           color: Colors.blue[(i + 1) * 100],
+              //         ),
+              //         child: Center(
+              //           child: Text(
+              //             'Carousel Item ${i + 1}',
+              //             style: TextStyle(color: Colors.white),
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),

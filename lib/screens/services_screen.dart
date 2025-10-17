@@ -1,30 +1,17 @@
-// import 'package:flutter/material.dart';
-
-// class ServicesScreen extends StatelessWidget {
-//   const ServicesScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return const Center(child: Text('Dịch vụ', style: TextStyle(fontSize: 32)));
-//   }
-// }
-
+// lib/screens/services_screen.dart
 import 'package:flutter/material.dart';
 import 'package:skyline_tower2/components/selection_grid.dart';
 import 'package:skyline_tower2/screens/request_form_screen.dart';
+import 'package:skyline_tower2/screens/user_opinion_screen.dart';
+// Make sure you have your AllNewsScreen imported if you want to navigate to it
+import 'package:skyline_tower2/screens/all_news_screen.dart';
 
 class ServicesScreen extends StatelessWidget {
   const ServicesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> favoriteServices = [
-      {'icon': Icons.payment, 'label': 'Phí dịch vụ'},
-      {'icon': Icons.water_drop, 'label': 'Phí nước'},
-      {'icon': Icons.article, 'label': 'Bảng tin'},
-      {'icon': Icons.feedback, 'label': 'Ý kiến'},
-    ];
-
+    // The lists remain the same
     final List<Map<String, dynamic>> allServices = [
       {'icon': Icons.payment, 'label': 'Phí dịch vụ'},
       {'icon': Icons.water_drop, 'label': 'Phí nước'},
@@ -38,7 +25,6 @@ class ServicesScreen extends StatelessWidget {
 
     final List<Map<String, dynamic>> newsItems = [
       {'icon': Icons.article, 'label': 'Bảng tin'},
-      {'icon': Icons.event, 'label': 'Sự kiện'},
       {'icon': Icons.feedback, 'label': 'Ý kiến'},
     ];
 
@@ -52,8 +38,6 @@ class ServicesScreen extends StatelessWidget {
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const Spacer(),
-            if (title == 'Tiện ích yêu thích')
-              TextButton(onPressed: () {}, child: const Text('Chỉnh sửa')),
           ],
         ),
       );
@@ -63,7 +47,6 @@ class ServicesScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Dịch vụ')),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Add your action here
           print('Temporary FAB pressed');
           Navigator.push(
             context,
@@ -77,14 +60,41 @@ class ServicesScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            sectionTitle('Tiện ích yêu thích'),
-            SelectionGrid(items: favoriteServices),
-
             sectionTitle('Dịch vụ'),
-            SelectionGrid(items: allServices),
+            // This grid handles service requests, but not opinions
+            SelectionGrid(
+              items: allServices,
+              onItemTap: (item) {
+                // You can handle other service taps here if needed
+                print('${item['label']} tapped');
+              },
+            ),
 
             sectionTitle('Tin tức'),
-            SelectionGrid(items: newsItems, crossAxisCount: 4),
+            // *** FIX: The onItemTap handler is now on the correct grid ***
+            SelectionGrid(
+              items: newsItems,
+              crossAxisCount: 4,
+              onItemTap: (item) {
+                // *** FIX: Add navigation logic inside the handler ***
+                if (item['label'] == "Ý kiến") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const UserOpinionScreen(),
+                    ),
+                  );
+                } else if (item['label'] == "Bảng tin") {
+                  // This is how you would handle the other button
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AllNewsScreen(),
+                    ),
+                  );
+                }
+              },
+            ),
           ],
         ),
       ),
